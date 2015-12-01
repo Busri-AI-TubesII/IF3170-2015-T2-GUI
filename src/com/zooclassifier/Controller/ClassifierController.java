@@ -141,8 +141,6 @@ public class ClassifierController implements Initializable,ControlledScreen{
         assert Toothed != null : "fx:id=\"Toothed\" was not injected: check your FXML file 'ZooClassifier.fxml'.";
         assert Venomous != null : "fx:id=\"Venomous\" was not injected: check your FXML file 'ZooClassifier.fxml'.";
         Legs.getSelectionModel().selectFirst();
-        kNN knnVar = new kNN(1);
-        NaiveBayes naiveBayesVar = new NaiveBayes();
 
         homeButton.setOnAction(new EventHandler<javafx.event.ActionEvent>() {
             @Override
@@ -265,6 +263,9 @@ public class ClassifierController implements Initializable,ControlledScreen{
             }
         });
         Execute.setOnAction(new EventHandler<javafx.event.ActionEvent>() {
+
+            kNN knnVar = new kNN(1);
+            NaiveBayes naiveBayesVar = new NaiveBayes();
             @Override
             public void handle(javafx.event.ActionEvent event) {
                 String [] Masukan = {keString(hairValue),
@@ -286,8 +287,8 @@ public class ClassifierController implements Initializable,ControlledScreen{
 
                 try {
                     String type="";
-                    ClassifierwithStringData Classifier;
                     ZooFileLoader fl = new ZooFileLoader("./res/zoo.data");
+                    ClassifierwithStringData Classifier;
                     if (algoType == 0) { //KNN
                         if ((!nKNN.getText().isEmpty())&&(nKNN.getText()!=null)) {
                             try {

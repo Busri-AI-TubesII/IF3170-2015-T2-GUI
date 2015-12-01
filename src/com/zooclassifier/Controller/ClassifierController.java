@@ -11,11 +11,16 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableArray;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import com.zooclassifier.Model.*;
 
 
-public class Controller {
+public class ClassifierController implements Initializable,ControlledScreen{
+    ScreensController myController;
+    public void setScreenParent(ScreensController screenParent){
+        myController = screenParent;
+    }
 
     @FXML
     private ResourceBundle resources;
@@ -103,7 +108,7 @@ public class Controller {
     }
 
     @FXML
-    void initialize() {
+    public void initialize(URL url, ResourceBundle rb) {
         assert Airborne != null : "fx:id=\"Airborne\" was not injected: check your FXML file 'ZooClassifier.fxml'.";
         assert Aquatic != null : "fx:id=\"Aquatic\" was not injected: check your FXML file 'ZooClassifier.fxml'.";
         assert Backbone != null : "fx:id=\"Backbone\" was not injected: check your FXML file 'ZooClassifier.fxml'.";
@@ -124,7 +129,7 @@ public class Controller {
         kNN knnVar = new kNN(1);
         ClassifierwithStringData knn = new ClassifierwithStringData(knnVar);
         try {
-            ZooFileLoader fl = new ZooFileLoader("C:\\Users\\Julio\\Desktop\\IF3170-2015-T2-GUI\\res\\zoo.data");
+            ZooFileLoader fl = new ZooFileLoader("./res/zoo.data");
             knn.setInputString(fl.getAttributesLegalValues());
             knn.setOutputString(fl.getLabelsLegalValues());
             knn.train(fl.getAttributes(),fl.getLabels());
@@ -135,7 +140,7 @@ public class Controller {
         NaiveBayes naiveBayesVar= new NaiveBayes();
         ClassifierwithStringData naiveBayes = new ClassifierwithStringData(naiveBayesVar);
         try {
-            ZooFileLoader fl = new ZooFileLoader("C:\\Users\\Julio\\Desktop\\IF3170-2015-T2-GUI\\res\\zoo.data");
+            ZooFileLoader fl = new ZooFileLoader("./res/zoo.data");
             naiveBayes.setInputString(fl.getAttributesLegalValues());
             naiveBayes.setOutputString(fl.getLabelsLegalValues());
             naiveBayes.train(fl.getAttributes(),fl.getLabels());
@@ -246,23 +251,6 @@ public class Controller {
         Execute.setOnAction(new EventHandler<javafx.event.ActionEvent>() {
             @Override
             public void handle(javafx.event.ActionEvent event) {
-                //Classifier Model Execute, return the type
-                /*System.out.println("Airborne Value ="+airborneValue);
-                System.out.println("Aquatic Value ="+aquaticValue);
-                System.out.println("Backbone Value ="+backboneValue);
-                System.out.println("Breathes Value ="+breathesValue);
-                System.out.println("Catsize Value ="+catsizeValue);
-                System.out.println("Domestic Value ="+domesticValue);
-                System.out.println("Eggs Value ="+eggsValue);
-                System.out.println("Feathers Value ="+feathersValue);
-                System.out.println("Fins Value ="+finsValue);
-                System.out.println("Hair Value ="+hairValue);
-                System.out.println("Legs Value ="+legsValue);
-                System.out.println("Milk Value ="+milkValue);
-                System.out.println("Predator Value ="+predatorValue);
-                System.out.println("Tail Value ="+tailValue);
-                System.out.println("Toothed Value ="+toothedValue);
-                System.out.println("Venomous Value ="+venomousValue);*/
                 String [] Masukan = {keString(hairValue),
                         keString(feathersValue),
                         keString(eggsValue),

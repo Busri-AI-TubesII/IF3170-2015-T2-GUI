@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="270.0" prefWidth="358.0" styleClass="mainFxmlClass" stylesheets="@training.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.zooclassifier.Controller.MainScreenController">
+   <children>
+      <BorderPane prefHeight="74.0" prefWidth="358.0" style="-fx-background-color: #999999;">
+         <center>
+            <Label styleClass="header" text="Welcome!" textFill="WHITE" BorderPane.alignment="CENTER" />
+         </center>
+      </BorderPane>
+      <Button fx:id="trainingButton" layoutX="97.0" layoutY="121.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="164.0" text="Training" />
+      <Button fx:id="classifierButton" layoutX="97.0" layoutY="182.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="164.0" text="Classifier Apps" />
+   </children>
+</AnchorPane>

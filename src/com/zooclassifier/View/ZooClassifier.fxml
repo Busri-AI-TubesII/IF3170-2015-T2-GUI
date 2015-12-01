@@ -8,9 +8,9 @@
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="com.zooclassifier.Controller.Controller">
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.zooclassifier.Controller.ClassifierController">
   <children>
-    <Pane layoutX="0.0" layoutY="0.0" prefHeight="87.0" prefWidth="600.0">
+    <Pane layoutX="0.0" prefHeight="87.0" prefWidth="600.0">
       <children>
         <Label layoutX="253.0" layoutY="20.0" text="Zoo Classifier" textAlignment="CENTER">
           <font>
@@ -20,7 +20,7 @@
         <Label fx:id="typeLabel" alignment="CENTER" layoutX="195.0" layoutY="40.0" prefHeight="33.0000084472631" prefWidth="211.0" text="Classify!" textAlignment="CENTER" underline="false" wrapText="false" />
       </children>
     </Pane>
-    <Pane layoutX="0.0" layoutY="313.0" prefHeight="87.0" prefWidth="600.0">
+    <Pane layoutY="313.0" prefHeight="87.0" prefWidth="600.0">
       <children>
         <Button fx:id="Execute" layoutX="272.0" layoutY="34.0" mnemonicParsing="false" text="Classify!" />
         <Pane layoutX="-1.0" layoutY="-51.0" prefHeight="51.0" prefWidth="600.0">

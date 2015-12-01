@@ -3,12 +3,14 @@ package com.zooclassifier.Controller;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import com.zooclassifier.Main.Main;
 import javafx.beans.InvalidationListener;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ArrayChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableArray;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -82,6 +84,19 @@ public class ClassifierController implements Initializable,ControlledScreen{
     @FXML
     private Label typeLabel;
 
+    @FXML
+    private RadioButton KNNbtn;
+
+    @FXML
+    private RadioButton NBbtn;
+
+    @FXML
+    private TextField nKNN;
+
+    @FXML
+    private Button homeButton;
+
+    private int algoType;
     private boolean airborneValue;
     private boolean aquaticValue;
     private boolean backboneValue;
@@ -127,27 +142,29 @@ public class ClassifierController implements Initializable,ControlledScreen{
         assert Venomous != null : "fx:id=\"Venomous\" was not injected: check your FXML file 'ZooClassifier.fxml'.";
         Legs.getSelectionModel().selectFirst();
         kNN knnVar = new kNN(1);
-        ClassifierwithStringData knn = new ClassifierwithStringData(knnVar);
-        try {
-            ZooFileLoader fl = new ZooFileLoader("./res/zoo.data");
-            knn.setInputString(fl.getAttributesLegalValues());
-            knn.setOutputString(fl.getLabelsLegalValues());
-            knn.train(fl.getAttributes(),fl.getLabels());
+        NaiveBayes naiveBayesVar = new NaiveBayes();
 
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-        NaiveBayes naiveBayesVar= new NaiveBayes();
-        ClassifierwithStringData naiveBayes = new ClassifierwithStringData(naiveBayesVar);
-        try {
-            ZooFileLoader fl = new ZooFileLoader("./res/zoo.data");
-            naiveBayes.setInputString(fl.getAttributesLegalValues());
-            naiveBayes.setOutputString(fl.getLabelsLegalValues());
-            naiveBayes.train(fl.getAttributes(),fl.getLabels());
+        homeButton.setOnAction(new EventHandler<javafx.event.ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                myController.setScreen(Main.MAIN_SCREEN);
+            }
+        });
 
-        } catch (Exception e){
-            e.printStackTrace();
-        }
+        KNNbtn.setOnAction(new EventHandler<javafx.event.ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                algoType = 0;
+            }
+        });
+
+        NBbtn.setOnAction(new EventHandler<javafx.event.ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                algoType = 1;
+            }
+        });
+
         Airborne.setOnAction(new EventHandler<javafx.event.ActionEvent>() {
             @Override
             public void handle(javafx.event.ActionEvent event) {
@@ -267,12 +284,38 @@ public class ClassifierController implements Initializable,ControlledScreen{
                         keString(tailValue),
                         keString(domesticValue),
                         keString(catsizeValue)};
-                try{
-                    String type = knn.predict(Masukan);
-                    typeLabel.setText("Type = ".concat(type));
-                } catch (Exception e){
-                    e.printStackTrace();
 
+                try {
+                    String type="";
+                    ClassifierwithStringData Classifier;
+                    ZooFileLoader fl = new ZooFileLoader("./res/zoo.data");
+                    if (algoType == 0) { //KNN
+                        if ((!nKNN.getText().isEmpty())&&(nKNN.getText()!=null)) {
+                            try {
+                                knnVar.setK(Integer.parseInt(nKNN.getText()));
+                                Classifier = new ClassifierwithStringData(knnVar);
+                                Classifier.setInputString(fl.getAttributesLegalValues());
+                                Classifier.setOutputString(fl.getLabelsLegalValues());
+                                Classifier.train(fl.getAttributes(), fl.getLabels());
+                                type = Classifier.predict(Masukan);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    } else { //Naive
+                        Classifier = new ClassifierwithStringData(naiveBayesVar);
+                        try {
+                            Classifier.setInputString(fl.getAttributesLegalValues());
+                            Classifier.setOutputString(fl.getLabelsLegalValues());
+                            Classifier.train(fl.getAttributes(), fl.getLabels());
+                            type = Classifier.predict(Masukan);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    typeLabel.setText("Type = ".concat(type));
+                } catch(Exception e){
+                    e.printStackTrace();
                 }
             }
         });

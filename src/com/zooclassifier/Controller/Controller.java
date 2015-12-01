@@ -1,9 +1,7 @@
 package com.zooclassifier.Controller;
 
-import java.awt.event.ActionEvent;
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.Vector;
 
 import javafx.beans.InvalidationListener;
 import javafx.beans.value.ChangeListener;
@@ -14,6 +12,7 @@ import javafx.collections.ObservableArray;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import com.zooclassifier.Model.*;
 
 
 public class Controller {
@@ -95,7 +94,13 @@ public class Controller {
     private boolean venomousValue;
     private int legsValue;
 
-
+    private String keString(boolean b){
+        if (b) {
+            return "1";
+        } else {
+            return "0";
+        }
+    }
 
     @FXML
     void initialize() {
@@ -116,6 +121,28 @@ public class Controller {
         assert Toothed != null : "fx:id=\"Toothed\" was not injected: check your FXML file 'ZooClassifier.fxml'.";
         assert Venomous != null : "fx:id=\"Venomous\" was not injected: check your FXML file 'ZooClassifier.fxml'.";
         Legs.getSelectionModel().selectFirst();
+        kNN knnVar = new kNN(1);
+        ClassifierwithStringData knn = new ClassifierwithStringData(knnVar);
+        try {
+            ZooFileLoader fl = new ZooFileLoader("C:\\Users\\Julio\\Desktop\\IF3170-2015-T2-GUI\\res\\zoo.data");
+            knn.setInputString(fl.getAttributesLegalValues());
+            knn.setOutputString(fl.getLabelsLegalValues());
+            knn.train(fl.getAttributes(),fl.getLabels());
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        NaiveBayes naiveBayesVar= new NaiveBayes();
+        ClassifierwithStringData naiveBayes = new ClassifierwithStringData(naiveBayesVar);
+        try {
+            ZooFileLoader fl = new ZooFileLoader("C:\\Users\\Julio\\Desktop\\IF3170-2015-T2-GUI\\res\\zoo.data");
+            naiveBayes.setInputString(fl.getAttributesLegalValues());
+            naiveBayes.setOutputString(fl.getLabelsLegalValues());
+            naiveBayes.train(fl.getAttributes(),fl.getLabels());
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
         Airborne.setOnAction(new EventHandler<javafx.event.ActionEvent>() {
             @Override
             public void handle(javafx.event.ActionEvent event) {
@@ -220,8 +247,7 @@ public class Controller {
             @Override
             public void handle(javafx.event.ActionEvent event) {
                 //Classifier Model Execute, return the type
-                typeLabel.setText("Type = SomeType");
-                System.out.println("Airborne Value ="+airborneValue);
+                /*System.out.println("Airborne Value ="+airborneValue);
                 System.out.println("Aquatic Value ="+aquaticValue);
                 System.out.println("Backbone Value ="+backboneValue);
                 System.out.println("Breathes Value ="+breathesValue);
@@ -236,7 +262,30 @@ public class Controller {
                 System.out.println("Predator Value ="+predatorValue);
                 System.out.println("Tail Value ="+tailValue);
                 System.out.println("Toothed Value ="+toothedValue);
-                System.out.println("Venomous Value ="+venomousValue);
+                System.out.println("Venomous Value ="+venomousValue);*/
+                String [] Masukan = {keString(hairValue),
+                        keString(feathersValue),
+                        keString(eggsValue),
+                        keString(milkValue),
+                        keString(airborneValue),
+                        keString(aquaticValue),
+                        keString(predatorValue),
+                        keString(toothedValue),
+                        keString(backboneValue),
+                        keString(breathesValue),
+                        keString(venomousValue),
+                        keString(finsValue),
+                        String.valueOf(legsValue),
+                        keString(tailValue),
+                        keString(domesticValue),
+                        keString(catsizeValue)};
+                try{
+                    String type = knn.predict(Masukan);
+                    typeLabel.setText("Type = ".concat(type));
+                } catch (Exception e){
+                    e.printStackTrace();
+
+                }
             }
         });
 

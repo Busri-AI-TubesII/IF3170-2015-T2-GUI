@@ -71,7 +71,7 @@ public class TrainingController implements Initializable, ControlledScreen{
     private int algoType;
     private int nKNN;
     private int trainMethod;
-
+    private File file;
     @FXML // This method is called by the FXMLLoader when initialization is complete
     public void initialize(URL url, ResourceBundle rb) {
         assert radioAlgoNB != null : "fx:id=\"radioAlgoNB\" was not injected: check your FXML file 'Training.fxml'.";
@@ -83,40 +83,34 @@ public class TrainingController implements Initializable, ControlledScreen{
         assert radioMethodFull != null : "fx:id=\"radioMethodFull\" was not injected: check your FXML file 'Training.fxml'.";
         assert buttonFileInputBrowse != null : "fx:id=\"buttonFileInputBrowse\" was not injected: check your FXML file 'Training.fxml'.";
         buttonFileInputBrowse.setOnAction(new EventHandler<javafx.event.ActionEvent>() {
-            kNN knnVar = new kNN(1);
-            NaiveBayes naiveBayesVar = new NaiveBayes();
+
             @Override
             public void handle(javafx.event.ActionEvent event) {
                 FileChooser fileChooser = new FileChooser();
-                File file = fileChooser.showOpenDialog(new Stage());
+                file = fileChooser.showOpenDialog(new Stage());
                 if (file != null) {
                     textboxFileInputPath.setPromptText(file.getAbsolutePath());
-                    try{
-                        ZooFileLoader fl = new ZooFileLoader(file.getAbsolutePath());
-                        ClassifierwithStringData Classifier;
-                        if (algoType == 0) { //KNN
-                            if ((!radioAlgoKNN.getText().isEmpty())&&(radioAlgoKNN.getText()!=null)) {
-                                knnVar.setK(Integer.parseInt(textboxAlgoKNN.getText()));
-                                Classifier = new ClassifierwithStringData(knnVar);
-                                if (trainMethod==1) {
-                                    try {
-                                        //Lakukan training metode Full training
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                } else {
-                                    try {
-                                        //Lakukan Training metode 10 Fold
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            }
-                        } else { //Naive
-                            Classifier = new ClassifierwithStringData(naiveBayesVar);
+
+                }
+            }
+        });
+
+        buttonTrain.setOnAction(new EventHandler<ActionEvent>() {
+            kNN knnVar = new kNN(1);
+            NaiveBayes naiveBayesVar = new NaiveBayes();
+            @Override
+            public void handle(ActionEvent event) {
+                try{
+                    ZooFileLoader fl = new ZooFileLoader(file.getAbsolutePath());
+                    ClassifierwithStringData Classifier;
+                    if (algoType == 0) { //KNN
+                        if ((!radioAlgoKNN.getText().isEmpty())&&(radioAlgoKNN.getText()!=null)) {
+                            knnVar.setK(Integer.parseInt(textboxAlgoKNN.getText()));
+                            Classifier = new ClassifierwithStringData(knnVar);
                             if (trainMethod==1) {
                                 try {
-                                    //Lakukan Training metode Full training
+                                    //Lakukan training metode Full training
+
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
@@ -128,13 +122,29 @@ public class TrainingController implements Initializable, ControlledScreen{
                                 }
                             }
                         }
-                        //Bikin Windows baru dengan stage textarea untuk menampilkan hasil training
-                    } catch (Exception e){
-                        e.printStackTrace();
+                    } else { //Naive
+                        Classifier = new ClassifierwithStringData(naiveBayesVar);
+                        if (trainMethod==1) {
+                            try {
+                                //Lakukan Training metode Full training
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        } else {
+                            try {
+                                //Lakukan Training metode 10 Fold
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
                     }
+                    //Bikin Windows baru dengan stage textarea untuk menampilkan hasil training
+                } catch (Exception e){
+                    e.printStackTrace();
                 }
             }
         });
+
         homeButton.setOnAction(new EventHandler<javafx.event.ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {

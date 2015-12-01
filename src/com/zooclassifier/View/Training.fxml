@@ -11,18 +11,26 @@
    <children>
       <Label layoutX="14.0" layoutY="112.0" styleClass="item-title" text="Input File" />
       <Label layoutX="14.0" layoutY="151.0" styleClass="item-title" text="Pilihan" />
-      <TextField layoutX="90.0" layoutY="107.0" prefHeight="27.0" prefWidth="156.0" style="-fx-background-color: #DDDDDD;" />
-      <RadioButton layoutX="90.0" layoutY="151.0" mnemonicParsing="false" text="KNN" />
-      <RadioButton layoutX="250.0" layoutY="151.0" mnemonicParsing="false" text="Naive Bayes" />
-      <TextField layoutX="156.0" layoutY="149.0" prefHeight="27.0" prefWidth="40.0" />
-      <Button layoutX="12.0" layoutY="190.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="164.0" text="Full Training" />
-      <Button layoutX="183.0" layoutY="190.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="164.0" text="10 Folds" />
-      <Button layoutX="12.0" layoutY="228.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="336.0" text="Train" />
-      <BorderPane prefHeight="74.0" prefWidth="358.0" style="-fx-background-color: #FFCCEE;">
+      <TextField fx:id="textboxFileInputPath" layoutX="90.0" layoutY="107.0" prefHeight="27.0" prefWidth="156.0" style="-fx-background-color: #DDDDDD;" />
+      <RadioButton fx:id="radioAlgoKNN" layoutX="90.0" layoutY="151.0" mnemonicParsing="false" selected="true" text="KNN">
+         <toggleGroup>
+            <ToggleGroup fx:id="AlgoType" />
+         </toggleGroup></RadioButton>
+      <RadioButton fx:id="radioAlgoNB" layoutX="250.0" layoutY="151.0" mnemonicParsing="false" text="Naive Bayes" toggleGroup="$AlgoType" />
+      <TextField fx:id="textboxAlgoKNN" layoutX="156.0" layoutY="149.0" prefHeight="27.0" prefWidth="40.0" text="1" />
+      <Button fx:id="buttonTrain" layoutX="85.0" layoutY="228.0" mnemonicParsing="false" prefHeight="29.0" prefWidth="263.0" text="Train" />
+      <BorderPane prefHeight="74.0" prefWidth="358.0" style="-fx-background-color: #999999;">
          <center>
             <Label styleClass="header" text="Welcome!" textFill="WHITE" BorderPane.alignment="CENTER" />
          </center>
       </BorderPane>
       <Button fx:id="buttonFileInputBrowse" layoutX="255.0" layoutY="106.0" mnemonicParsing="false" text="Browse" />
+      <RadioButton fx:id="radioMethodFull" layoutX="90.0" layoutY="187.0" mnemonicParsing="false" selected="true" text="Full Training">
+         <toggleGroup>
+            <ToggleGroup fx:id="TrainingMode" />
+         </toggleGroup>
+      </RadioButton>
+      <RadioButton fx:id="radioMethodTen" layoutX="250.0" layoutY="187.0" mnemonicParsing="false" text="10 Fold" toggleGroup="$TrainingMode" />
+      <Button fx:id="homeButton" layoutX="14.0" layoutY="228.0" mnemonicParsing="false" prefHeight="29.0" prefWidth="63.0" text="&lt;" />
    </children>
 </AnchorPane>

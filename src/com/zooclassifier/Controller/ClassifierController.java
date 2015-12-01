@@ -262,7 +262,6 @@ public class ClassifierController implements Initializable,ControlledScreen{
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                 legsValue = legSelection[newValue.intValue()];
-                System.out.println(legsValue);
             }
         });
         Execute.setOnAction(new EventHandler<javafx.event.ActionEvent>() {

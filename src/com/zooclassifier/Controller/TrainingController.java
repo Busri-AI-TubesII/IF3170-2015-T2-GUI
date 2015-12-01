@@ -4,9 +4,16 @@
 
 package com.zooclassifier.Controller;
 
+import java.awt.*;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import com.zooclassifier.Main.Main;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -16,6 +23,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import javafx.stage.Window;
 
 public class TrainingController implements Initializable, ControlledScreen{
@@ -54,14 +62,11 @@ public class TrainingController implements Initializable, ControlledScreen{
     private Button buttonFileInputBrowse; // Value injected by FXMLLoader
 
     @FXML
-    void actionTrain(ActionEvent event) {
-        
-    }
+    private Button homeButton;
 
-    @FXML
-    void actionBrowseFile(ActionEvent event) {
-        
-    }
+    private int algoType;
+    private int nKNN;
+    private int trainMethod;
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
     public void initialize(URL url, ResourceBundle rb) {
@@ -76,8 +81,47 @@ public class TrainingController implements Initializable, ControlledScreen{
         buttonFileInputBrowse.setOnAction(new EventHandler<javafx.event.ActionEvent>() {
             @Override
             public void handle(javafx.event.ActionEvent event) {
-                System.out.println("CLICKED");
+                FileChooser fileChooser = new FileChooser();
+                File file = fileChooser.showOpenDialog(new Stage());
+                if (file != null) {
+                    textboxFileInputPath.setPromptText(file.getAbsolutePath());
+                }
             }
         });
+        homeButton.setOnAction(new EventHandler<javafx.event.ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                myController.setScreen(Main.MAIN_SCREEN);
+            }
+        });
+
+        radioAlgoKNN.setOnAction(new EventHandler<javafx.event.ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                algoType = 0;
+            }
+        });
+
+        radioAlgoNB.setOnAction(new EventHandler<javafx.event.ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                algoType = 1;
+            }
+        });
+
+        radioMethodTen.setOnAction(new EventHandler<javafx.event.ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                trainMethod = 0;
+            }
+        });
+
+        radioMethodFull.setOnAction(new EventHandler<javafx.event.ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                trainMethod = 1;
+            }
+        });
+
     }
 }

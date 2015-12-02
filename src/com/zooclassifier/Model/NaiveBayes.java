@@ -285,7 +285,7 @@ public class NaiveBayes extends OfflineLearningNominalDataClassifier{
             pOut[i] = sc.nextDouble();
             System.out.println(pOut[i]);
         }
-        
+        trained=true;
     }
     
 }

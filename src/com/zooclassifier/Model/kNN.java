@@ -195,6 +195,7 @@ public class kNN extends OfflineLearningNominalDataClassifier{
             }
             System.out.println();
         }
+        trained=true;
     }    
     
 }

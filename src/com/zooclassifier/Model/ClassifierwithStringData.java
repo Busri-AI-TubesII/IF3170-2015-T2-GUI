@@ -17,7 +17,7 @@ import java.util.Scanner;
  *
  * @author nim_13512501
  */
-public class ClassifierwithStringData {
+public class  ClassifierwithStringData {
     private OfflineLearningNominalDataClassifier classifier;
     private String [][] inputString;
     private String [] outputString;

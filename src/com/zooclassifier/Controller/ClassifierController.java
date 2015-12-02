@@ -1,5 +1,8 @@
 package com.zooclassifier.Controller;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -302,14 +305,16 @@ public class ClassifierController implements Initializable,ControlledScreen{
                                 e.printStackTrace();
                             }
                         }
-                    } else { //Naive
-                        Classifier = new ClassifierwithStringData(naiveBayesVar);
+                    } else { //Naive, load dari model?
+                        File file;
+                        InputStream inputStream;
                         try {
-                            Classifier.setInputString(fl.getAttributesLegalValues());
-                            Classifier.setOutputString(fl.getLabelsLegalValues());
-                            Classifier.train(fl.getAttributes(), fl.getLabels());
+                            file = new File("NaiveHypothesisZoo.txt");
+                            inputStream = new FileInputStream(file);
+                            Classifier = new ClassifierwithStringData(naiveBayesVar);
+                            Classifier.loadHypothesis(inputStream);
                             type = Classifier.predict(Masukan);
-                        } catch (Exception e) {
+                        } catch (Exception e){
                             e.printStackTrace();
                         }
                     }

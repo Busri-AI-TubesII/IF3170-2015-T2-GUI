@@ -5,9 +5,7 @@
 package com.zooclassifier.Controller;
 
 import java.awt.*;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -165,9 +163,16 @@ public class TrainingController implements Initializable, ControlledScreen{
                         e.printStackTrace();
                     }
                     if (Classifier!=null) {
-                        System.out.println("Accuracy : " + Classifier.accuracy(fl.getAttributes(), fl.getLabels()));
-                        System.out.println("Confusion Matrix : ");
-                        printConfusionMatrix(Classifier.getOutputString(),Classifier.calculateConfusionMatrix(fl.getAttributes(),fl.getLabels()));
+                        System.out.println(file.getName()+algoType+"-"+trainMethod);
+                        if ((algoType==1)&&(trainMethod==1)&&(file.getName().equals("zoo.data"))) {
+                            File file = new File("NaiveHypothesisZoo.txt");
+                            OutputStream fOut = new FileOutputStream(file);
+                            Classifier.writeHypothesis(fOut);
+                        } else {
+                            File file = new File("Hypothesis.txt");
+                            OutputStream fOut = new FileOutputStream(file);
+                            Classifier.writeHypothesis(fOut);
+                        }
                         trainResult="Accuracy : " + Classifier.accuracy(fl.getAttributes(), fl.getLabels())+ "\n" +
                                 "Confusion Matrix : \n" +
                                 confusionMatrixString(Classifier.getOutputString(),Classifier.calculateConfusionMatrix(fl.getAttributes(),fl.getLabels()));

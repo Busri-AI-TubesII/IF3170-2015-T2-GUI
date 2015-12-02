@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
  *
  * @author nim_13512501
  */
-public class ZooFileLoader implements FileLoader{
+public class ZooFileLoader {
     
     String [][] attributes;
     String [] labels;
@@ -101,20 +101,18 @@ public class ZooFileLoader implements FileLoader{
         labels = templabel.toArray(new String[templabel.size()]);
     }
 
-    
-    @Override
+
+
     public String[][] getAttributes(){
         return attributes;
     }
-    
-    @Override
+
     public String[] getLabels(){
         return labels;
     }
-    
-    @Override
+
     public String[][] getAttributesLegalValues(){return attributesLegalValues;}
-    @Override
+
     public String[] getLabelsLegalValues(){return labelsLegalValues;}
     // attributes[i][j] artinya mendapatkan attribut ke j dari instance i
     

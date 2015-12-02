@@ -6,6 +6,7 @@
 package com.zooclassifier.Model;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import static java.lang.Integer.min;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -16,6 +17,8 @@ import java.util.Scanner;
  */
 public class kNN extends OfflineLearningNominalDataClassifier{
 
+    public kNN() {}
+    
     public kNN(int k){
         this.k = k;
     }
@@ -140,12 +143,58 @@ public class kNN extends OfflineLearningNominalDataClassifier{
 //TODO save dan load
     @Override
     public void writeHypothesis(OutputStream str) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        PrintStream printStream = new PrintStream(str);
+        
+        // Print k and exampleNumInputCategory
+        printStream.println(k);
+        printStream.println(exampleNumInputCategory.length);
+        for (int i = 0; i < exampleNumInputCategory.length; i++) {
+            printStream.print(exampleNumInputCategory[i] + " ");
+        }
+        printStream.println();
+        
+        
+        // Print exampleInputCategory
+        printStream.println(exampleInputCategory.length);
+        for (int i = 0; i < exampleInputCategory.length; i++) {
+            printStream.println(exampleInputCategory[i].length);
+            for (int j = 0; j < exampleInputCategory[i].length; j++) {
+                printStream.print(exampleInputCategory[i][j] + " ");
+            }
+            printStream.println();
+        }
+        
+        printStream.flush();
     }
 
     @Override
-    public void loadHypothesis(Scanner str) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void loadHypothesis(Scanner sc) {
+        k = sc.nextInt();
+        System.out.println(k);
+        
+        int maxI = sc.nextInt();
+        System.out.println(maxI);
+        exampleNumInputCategory = new int[maxI];
+        for (int i = 0; i < maxI; i++) {
+            exampleNumInputCategory[i] = sc.nextInt();
+            System.out.print(exampleNumInputCategory[i] + " ");
+        }
+        System.out.println();
+        
+        maxI = sc.nextInt();
+        System.out.println(maxI);
+        exampleInputCategory = new int[maxI][];
+        
+        for (int i = 0; i < maxI; i++) {
+            int maxJ = sc.nextInt();
+            System.out.println(maxJ);
+            exampleInputCategory[i] = new int[maxJ];
+            for (int j = 0; j < maxJ; j++) {
+                exampleInputCategory[i][j] = sc.nextInt();
+                System.out.print(exampleInputCategory[i][j] + " ");
+            }
+            System.out.println();
+        }
     }    
     
 }

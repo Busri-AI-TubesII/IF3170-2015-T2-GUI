@@ -7,8 +7,12 @@ package com.zooclassifier.Model;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @param T
@@ -98,11 +102,32 @@ public class kFold extends OfflineLearningNominalDataClassifier {
 //TODO save dan load
     @Override
     public void writeHypothesis(OutputStream str) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        PrintStream printStream = new PrintStream(str);
+        printStream.println(k);
+        //save tipe dari classifier
+        printStream.println(classifier.getClass().getName());
+        printStream.flush();
+        classifier.writeHypothesis(str);
     }
 
     @Override
-    public void loadHypothesis(InputStream str) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void loadHypothesis(Scanner sc) {
+        k=sc.nextInt();
+        
+        String className = sc.nextLine();
+        System.out.println(className);
+        
+        Class cl;
+        try {
+            cl = Class.forName(className);
+            classifier = (OfflineLearningNominalDataClassifier) cl.newInstance();
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(kFold.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            Logger.getLogger(kFold.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(kFold.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        classifier.loadHypothesis(sc);
     }  
 }

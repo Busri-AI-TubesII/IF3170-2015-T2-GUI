@@ -5,9 +5,13 @@
  */
 package com.zooclassifier.Model;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.util.Arrays;
+import java.util.Scanner;
 
 /**
  *
@@ -56,7 +60,7 @@ public class ClassifierwithStringData {
         
         int [] outputClassInt = new int[outputClass.length];
         for (int i=0; i<outputClass.length;i++){
-            outputClassInt[i]=search(outputString, outputClass[i]);
+            outputClassInt[i]=search(getOutputString(), outputClass[i]);
         }
         return outputClassInt;
     }
@@ -70,7 +74,7 @@ public class ClassifierwithStringData {
         }
         
         //train classifier
-        classifier.train(numInputCategory,inputCategoryInt,outputString.length,outputClassInt);
+        classifier.train(numInputCategory,inputCategoryInt,getOutputString().length,outputClassInt);
     }
     
     public String predict(String [] inputString) throws Exception{
@@ -79,19 +83,82 @@ public class ClassifierwithStringData {
             inputInt[i] = search(this.inputString[i], inputString[i]);
         }
         int classInt= classifier.predict(inputInt);
-        return outputString[classInt];
+        return getOutputString()[classInt];
     }
     
     public double accuracy(String [][] inputCategories, String [] outputClass) throws Exception{
         return classifier.calculateAccuracy(inputStringToInt(inputCategories), outputClassStringToInt(outputClass));
     }
     
+    public int [][] calculateConfusionMatrix(String [][] inputCategories, String [] outputClass) throws Exception{
+        return classifier.calculateConfusionMatrix(classifier, inputStringToInt(inputCategories), outputClassStringToInt(outputClass), outputString.length);
+    }
+    
     //TODO save dan load
-    public void writeHypothesis(OutputStream str) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void writeHypothesis(OutputStream str) throws IOException {
+        
+        PrintStream printStream = new PrintStream(str);
+        
+        // Print for input string
+        printStream.println(inputString.length);
+        for(int i=0; i<inputString.length; i++){
+            printStream.println(inputString[i].length);
+            for(int j=0; j<inputString[i].length; j++){
+                printStream.println(inputString[i][j]);
+            }
+        }
+        
+        // Print for output string
+        printStream.println(outputString.length);
+        for (int i = 0; i < outputString.length; i++) {
+            printStream.println(outputString[i]);
+        }
+        
+        //save tipe dari classifier
+        printStream.println(classifier.getClass().getName());
+        printStream.flush();
+        classifier.writeHypothesis(str);
+        
     }
 
-    public void loadHypothesis(InputStream str) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void loadHypothesis(InputStream str) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+        Scanner sc = new Scanner(str);
+        int maxI = sc.nextInt();
+        System.out.println(maxI);
+        inputString = new String[maxI][];
+        for (int i = 0; i < maxI; i++) {
+            int maxJ = sc.nextInt();
+            System.out.println(maxJ);
+            sc.nextLine();
+            inputString[i] = new String[maxJ];
+            for (int j = 0; j < maxJ; j++) {
+                inputString[i][j] = sc.nextLine();
+                System.out.println(inputString[i][j]);
+                
+            }
+        }
+        
+        maxI = sc.nextInt();
+        System.out.println(maxI);
+        sc.nextLine();
+        outputString = new String[maxI];
+        for (int i = 0; i < maxI; i++) {
+            outputString[i] = sc.nextLine();
+            System.out.println(outputString[i]);
+        }
+        
+        String className = sc.nextLine();
+        System.out.println(className);
+        
+        Class cl = Class.forName(className);
+        classifier = (OfflineLearningNominalDataClassifier) cl.newInstance();
+        classifier.loadHypothesis(sc);
+    }
+
+    /**
+     * @return the outputString
+     */
+    public String[] getOutputString() {
+        return outputString;
     }
 }

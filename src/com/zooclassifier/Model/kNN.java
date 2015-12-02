@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import static java.lang.Integer.min;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Scanner;
 /**
  *
  * @author nim_13512501
@@ -23,7 +24,7 @@ public class kNN extends OfflineLearningNominalDataClassifier{
         this.k= k;
     }
     
-    int getK(){return k;}
+    public int getK(){return k;}
     
     private int k;
     private int [] exampleNumInputCategory = null;
@@ -143,7 +144,7 @@ public class kNN extends OfflineLearningNominalDataClassifier{
     }
 
     @Override
-    public void loadHypothesis(InputStream str) {
+    public void loadHypothesis(Scanner str) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }    
     

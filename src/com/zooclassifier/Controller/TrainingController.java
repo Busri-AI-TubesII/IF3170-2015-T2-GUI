@@ -14,15 +14,15 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.zooclassifier.Main.Main;
-import com.zooclassifier.Model.ClassifierwithStringData;
-import com.zooclassifier.Model.NaiveBayes;
-import com.zooclassifier.Model.ZooFileLoader;
-import com.zooclassifier.Model.kNN;
+import com.zooclassifier.Model.*;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
@@ -32,6 +32,7 @@ import javafx.stage.Window;
 
 public class TrainingController implements Initializable, ControlledScreen{
     ScreensController myController;
+    TrainingOutputController trainingOutputController;
     public void setScreenParent(ScreensController screenParent){
         myController = screenParent;
     }
@@ -68,10 +69,43 @@ public class TrainingController implements Initializable, ControlledScreen{
     @FXML
     private Button homeButton;
 
+    @FXML
+    private TextField outputTextArea;
+
     private int algoType;
     private int nKNN;
     private int trainMethod;
     private File file;
+    public void printConfusionMatrix(String [] labels, int [][] confusionMatrix){
+        System.out.print("\t");
+        for (int i=0;i<labels.length;i++){
+            System.out.print(labels[i]+"\t");
+        }
+        System.out.println("<-- classified as");
+        for (int i=0;i<labels.length;i++){
+            for (int j=0;j<labels.length;j++){
+                System.out.print("\t"+confusionMatrix[i][j]);
+            }
+            System.out.println("\t"+"| "+ labels[i]);
+        }
+        System.out.println("");
+    }
+    public String confusionMatrixString(String[] labels, int[][] confusionMatrix){
+        String result="\t";
+        for (int i=0;i<labels.length;i++){
+            result+=labels[i]+"\t";
+        }
+        result+="<-- classified as\n";
+        for (int i=0;i<labels.length;i++){
+            for (int j=0;j<labels.length;j++){
+                result+="\t"+confusionMatrix[i][j];
+            }
+            result+="\t"+"| "+ labels[i]+"\n";
+        }
+        result+="\n";
+        return result;
+    }
+    public static String trainResult;
     @FXML // This method is called by the FXMLLoader when initialization is complete
     public void initialize(URL url, ResourceBundle rb) {
         assert radioAlgoNB != null : "fx:id=\"radioAlgoNB\" was not injected: check your FXML file 'Training.fxml'.";
@@ -90,7 +124,6 @@ public class TrainingController implements Initializable, ControlledScreen{
                 file = fileChooser.showOpenDialog(new Stage());
                 if (file != null) {
                     textboxFileInputPath.setPromptText(file.getAbsolutePath());
-
                 }
             }
         });
@@ -102,43 +135,57 @@ public class TrainingController implements Initializable, ControlledScreen{
             public void handle(ActionEvent event) {
                 try{
                     ZooFileLoader fl = new ZooFileLoader(file.getAbsolutePath());
-                    ClassifierwithStringData Classifier;
+                    ClassifierwithStringData Classifier = null;
                     if (algoType == 0) { //KNN
                         if ((!radioAlgoKNN.getText().isEmpty())&&(radioAlgoKNN.getText()!=null)) {
                             knnVar.setK(Integer.parseInt(textboxAlgoKNN.getText()));
-                            Classifier = new ClassifierwithStringData(knnVar);
                             if (trainMethod==1) {
-                                try {
-                                    //Lakukan training metode Full training
-
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
+                                //Lakukan training metode Full training
+                                Classifier = new ClassifierwithStringData(knnVar);
                             } else {
-                                try {
-                                    //Lakukan Training metode 10 Fold
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
+                                //Lakukan Training metode 10 Fold
+                                Classifier = new ClassifierwithStringData(new kFold(10,knnVar));
                             }
                         }
                     } else { //Naive
-                        Classifier = new ClassifierwithStringData(naiveBayesVar);
                         if (trainMethod==1) {
-                            try {
-                                //Lakukan Training metode Full training
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
+                            //Lakukan training metode Full training
+                            Classifier = new ClassifierwithStringData(naiveBayesVar);
+
                         } else {
-                            try {
-                                //Lakukan Training metode 10 Fold
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
+                            //Lakukan Training metode 10 Fold
+                            Classifier = new ClassifierwithStringData(new kFold(10,naiveBayesVar));
                         }
                     }
-                    //Bikin Windows baru dengan stage textarea untuk menampilkan hasil training
+                    try {
+                        Classifier.setInputString(fl.getAttributesLegalValues());
+                        Classifier.setOutputString(fl.getLabelsLegalValues());
+                        Classifier.train(fl.getAttributes(),fl.getLabels());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    if (Classifier!=null) {
+                        System.out.println("Accuracy : " + Classifier.accuracy(fl.getAttributes(), fl.getLabels()));
+                        System.out.println("Confusion Matrix : ");
+                        printConfusionMatrix(Classifier.getOutputString(),Classifier.calculateConfusionMatrix(fl.getAttributes(),fl.getLabels()));
+                        trainResult="Accuracy : " + Classifier.accuracy(fl.getAttributes(), fl.getLabels())+ "\n" +
+                                "Confusion Matrix : \n" +
+                                confusionMatrixString(Classifier.getOutputString(),Classifier.calculateConfusionMatrix(fl.getAttributes(),fl.getLabels()));
+
+                        //Bikin Windows baru dengan stage textarea untuk menampilkan hasil training
+                        Parent root;
+                        try {
+                            root = FXMLLoader.load(getClass().getResource("../View/TrainingOutput.fxml"));
+                            Stage stage = new Stage();
+                            Scene scene = new Scene(root);
+                            stage.setTitle("Train Result");
+                            stage.setScene(scene);
+                            stage.show();
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
                 } catch (Exception e){
                     e.printStackTrace();
                 }

@@ -5,8 +5,18 @@
  */
 package com.zooclassifier.Model;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -20,8 +30,6 @@ public class NaiveBayes extends OfflineLearningNominalDataClassifier{
     boolean trained = false;
     int numAttrs=0;
     int numOutputClass=0;
-    
-    
     
     //helper
     private int sum(int[] X){
@@ -200,12 +208,84 @@ public class NaiveBayes extends OfflineLearningNominalDataClassifier{
     //TODO save dan load
     @Override
     public void writeHypothesis(OutputStream str) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
+        PrintStream printStream = new PrintStream(str);
+       
+        // Print pInGivenOut
+        printStream.println(pInGivenOut.length);
+        for (int i = 0; i < pInGivenOut.length; i++) {
+            printStream.println(pInGivenOut[i].length);
+            for (int j = 0; j < pInGivenOut[i].length; j++) {
+                printStream.println(pInGivenOut[i][j].length);
+                for (int k = 0; k < pInGivenOut[i][j].length; k++) {
+                    printStream.print(pInGivenOut[i][j][k] + " ");
+                }
+                printStream.println();
+            }
+        }
+        
+        // Print pIn
+        printStream.println(pIn.length);
+        for (int i = 0; i < pIn.length; i++) {
+            printStream.println(pIn[i].length);
+            for (int j = 0; j < pIn[i].length; j++) {
+                printStream.print(pIn[i][j] + " ");
+            }
+            printStream.println();
+        }
+        
+        // Print pOut
+        printStream.println(pOut.length);
+        for (int i = 0; i < pOut.length; i++) {
+            printStream.println(pOut[i]);
+        }
+        printStream.flush();
     }
 
     @Override
-    public void loadHypothesis(InputStream str) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void loadHypothesis(Scanner sc) {
+//    double [] pOut = null;
+        int maxI = sc.nextInt();
+        System.out.println(maxI);
+        pInGivenOut = new double[maxI][][];
+        for (int i = 0; i < maxI; i++) {
+            int maxJ = sc.nextInt();
+            System.out.println(maxJ);
+            pInGivenOut[i] = new double[maxJ][];
+            for (int j = 0; j < maxJ; j++) {
+                int maxK = sc.nextInt();
+                System.out.println(maxK);
+                pInGivenOut[i][j] = new double[maxK];
+                for (int k = 0; k < maxK; k++) {
+                    pInGivenOut[i][j][k] = sc.nextDouble();
+                    System.out.print(pInGivenOut[i][j][k] + " ");
+                }
+                System.out.println();
+            }
+        }
+        
+        maxI = sc.nextInt();
+        System.out.println(maxI);
+        pIn = new double[maxI][];
+        for (int i = 0; i < maxI; i++) {
+            int maxJ = sc.nextInt();
+            System.out.println(maxJ);
+            pIn[i] = new double[maxJ];
+            for (int j = 0; j < maxJ; j++) {
+                pIn[i][j] = sc.nextDouble();
+                System.out.print(pIn[i][j] + " ");
+            }
+            System.out.println();
+        }
+        
+        maxI = sc.nextInt();
+        System.out.println(maxI);
+        pOut = new double[maxI];
+        for (int i = 0; i < maxI; i++) {
+            pOut[i] = sc.nextDouble();
+            System.out.println(pOut[i]);
+        }
+        
     }
     
 }
